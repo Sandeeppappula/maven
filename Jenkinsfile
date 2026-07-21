@@ -17,7 +17,7 @@ node('built-in')
     {
         cicd.gittesting("FunctionalTesting")
     }
-    stage("delivary_master")
+    stage("delivery_master")
     {
         cicd.gitdelivery("172.31.3.43","prodapp2")
     }
