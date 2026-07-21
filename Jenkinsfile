@@ -19,7 +19,7 @@ node('built-in')
     }
     stage("delivary_master")
     {
-        cicd.gitdelivary("172.31.3.43","prodapp2")
+        cicd.gitdelivery("172.31.3.43","prodapp2")
     }
 }
 
