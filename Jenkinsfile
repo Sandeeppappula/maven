@@ -1,24 +1,28 @@
-node("built-in")
+@Library('mylibrary')_
+node('built-in')
 {
-    stage("download")
+    stage('download_master')
     {
-        git 'https://github.com/Sandeeppappula/maven.git'
+        cicd.gitdownload("maven")
     }
-    stage("build")
+    stage('build_master')
     {
-        sh 'mvn package'
+        cicd.gitbuild()
     }
-    stage("deploy")
+    stage('deploy_master')
     {
-        sh 'scp /var/lib/jenkins/workspace/demo/webapp/target/webapp.war ubuntu@172.31.8.161:/var/lib/tomcat10/test2'
+        cicd.gitdeploy("172.31.8.161","testapp1")
     }
-    stage("testing")
+    stage("testing_master")
     {
-        git 'https://github.com/Sandeeppappula/FunctionalTesting.git'
-        sh 'java -jar /var/lib/jenkins/workspace/DemoScriptedPipeline/testing.jar'
+        cicd.gittesting("FunctionalTesting")
     }
-    stage("delivery")
+    stage("delivary_master")
     {
-        sh 'scp /var/lib/jenkins/workspace/DemoScriptedPipeline/webapp/target/webapp.war ubuntu@172.31.3.43:/var/lib/tomcat10/prod2'
+        cicd.gitdelivary("172.31.3.43","prodapp2")
     }
 }
+
+
+
+
