@@ -1,61 +1,24 @@
-@Library('mylibrary')_
-
-
-pipeline
+node("built-in")
 {
-    agent any
-    stages
+    stage("download")
     {
-        stage('Download_Master')
-        {
-            steps
-            {
-                script
-                {
-                    cicd.gitDownload("maven")
-                }
-            }
-        }
-        stage('Build_Master')
-        {
-            steps
-            {
-                script
-                {
-                    cicd.buildArtifact()
-                }
-            }
-        }
-        stage('Deployment_Master')
-        {
-            steps
-            {
-                script
-                {
-                    cicd.deployTomcat("DeclarativePipelinewithSharedLibraries","172.31.31.19","myapp")
-                }
-            }
-        }
-        stage('Testing_Master')
-        {
-            steps
-            {
-                script
-                {
-                    cicd.gitDownload("FunctionalTesting")
-                    cicd.executeSelenium("DeclarativePipelinewithSharedLibraries")
-                }
-            }
-        }
-        stage('Delivery_Master')
-        {
-            steps
-            {
-                script
-                {
-                    cicd.deployTomcat("DeclarativePipelinewithSharedLibraries","172.31.25.180","myprodapp")
-                }
-            }
-        }
+        git 'https://github.com/Sandeeppappula/maven.git'
+    }
+    stage("build")
+    {
+        sh 'mvn package'
+    }
+    stage("deploy")
+    {
+        sh 'scp /var/lib/jenkins/workspace/demo/webapp/target/webapp.war ubuntu@172.31.8.161:/var/lib/tomcat10/test2'
+    }
+    stage("testing")
+    {
+        git 'https://github.com/Sandeeppappula/FunctionalTesting.git'
+        sh 'java -jar /var/lib/jenkins/workspace/DemoScriptedPipeline/testing.jar'
+    }
+    stage("delivery")
+    {
+        sh 'scp /var/lib/jenkins/workspace/DemoScriptedPipeline/webapp/target/webapp.war ubuntu@172.31.3.43:/var/lib/tomcat10/prod2'
     }
 }
